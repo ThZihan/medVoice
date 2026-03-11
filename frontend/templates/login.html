@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to Medicine List Generator - Secure access to your medication schedule">
+    <title>Login - Medicine List Generator</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Auth Page Styles */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            padding: var(--spacing-md);
+        }
+        
+        .auth-container {
+            max-width: 420px;
+            width: 100%;
+            background: var(--bg-surface);
+            border: 2px solid var(--border-primary);
+            padding: var(--spacing-lg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .auth-title {
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 var(--spacing-md) 0;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            text-align: center;
+        }
+        
+        .auth-subtitle {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        
+        .auth-toggle {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 2px solid var(--border-secondary);
+        }
+        
+        .auth-toggle p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .auth-toggle a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition-fast);
+        }
+        
+        .auth-toggle a:hover {
+            color: var(--accent-secondary);
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--error);
+            padding: var(--spacing-md);
+            border: 2px solid var(--error);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+            font-size: var(--text-sm);
+            font-weight: 600;
+            role="alert";
+        }
+        
+        .success-message {
+            background: rgba(0, 168, 107, 0.1);
+            color: var(--success);
+            padding: var(--spacing-md);
+            border: 2px solid var(--success);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-md);
+            display: none;
+            font-size: var(--text-sm);
+            font-weight: 600;
+            role="status";
+        }
+        
+        /* Registration Modal Styles */
+        .register-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+        }
+        
+        .register-modal.active {
+            display: flex;
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .register-modal-content {
+            background: var(--bg-surface);
+            border: 2px solid var(--border-primary);
+            border-radius: var(--border-radius-md);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .register-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: 2px solid var(--border-secondary);
+        }
+        
+        .register-modal-header h2 {
+            font-family: var(--font-display);
+            font-size: var(--text-lg);
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+        
+        .register-modal-close {
+            background: transparent;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition-fast);
+        }
+        
+        .register-modal-close:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+        
+        .register-modal-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        /* Tablet and Desktop Styles */
+        @media (min-width: 640px) {
+            .auth-page {
+                padding: var(--spacing-xl);
+            }
+            
+            .auth-container {
+                padding: var(--spacing-xl);
+            }
+            
+            .auth-title {
+                font-size: var(--text-2xl);
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page">
+        <main class="auth-container" role="main">
+            <h1 class="auth-title">Medicine List Generator</h1>
+            <p class="auth-subtitle">Secure access to your medication schedule</p>
+            
+            <div class="error-message" id="errorMessage" role="alert"></div>
+            <div class="success-message" id="successMessage" role="status"></div>
+            
+            <form class="auth-form" id="loginForm" aria-label="Login form">
+                <div class="form-group">
+                    <label for="patient_id">Patient ID</label>
+                    <input type="text" id="patient_id" name="patient_id" required 
+                           placeholder="Enter your patient ID" autocomplete="username" aria-required="true">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Enter your password" autocomplete="current-password" aria-required="true">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            
+            <div class="auth-toggle">
+                <p>New user? <a href="#" id="showRegisterModal">Create account</a></p>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Registration Modal -->
+    <div class="register-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="register-title">
+        <div class="register-modal-content">
+            <div class="register-modal-header">
+                <h2 id="register-title">Create Account</h2>
+                <button class="register-modal-close" id="closeRegisterModal" aria-label="Close registration modal">&times;</button>
+            </div>
+            
+            <div class="register-modal-body">
+                <div class="error-message" id="registerErrorMessage" role="alert"></div>
+                <div class="success-message" id="registerSuccessMessage" role="status"></div>
+                
+                <form class="auth-form" id="registerForm" aria-label="Registration form">
+                    <div class="form-group">
+                        <label for="reg_name">Full Name</label>
+                        <input type="text" id="reg_name" name="name" required 
+                               placeholder="Enter your full name" aria-required="true">
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="reg_age">Age</label>
+                            <input type="number" id="reg_age" name="age" required 
+                                   placeholder="Age" min="1" max="120" aria-required="true">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="reg_email">Email (Optional)</label>
+                            <input type="email" id="reg_email" name="email" 
+                                   placeholder="Email address">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg_patient_id">Choose Patient ID</label>
+                        <input type="text" id="reg_patient_id" name="patient_id" required 
+                               placeholder="Create a unique ID" aria-required="true">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg_password">Password</label>
+                        <input type="password" id="reg_password" name="password" required 
+                               placeholder="Create a password" minlength="6" aria-required="true">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg_confirm_password">Confirm Password</label>
+                        <input type="password" id="reg_confirm_password" name="confirm_password" required 
+                               placeholder="Confirm your password" minlength="6" aria-required="true">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>

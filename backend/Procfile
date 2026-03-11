@@ -1,0 +1,5 @@
+# Procfile for PythonAnywhere Deployment
+# PythonAnywhere uses a different deployment method, but this file
+# documents the WSGI configuration for reference
+
+web: gunicorn medlist_backend.wsgi:application --log-file -
