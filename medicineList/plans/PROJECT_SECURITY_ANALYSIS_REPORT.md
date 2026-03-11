@@ -605,7 +605,7 @@ def login_view(request):
 **API Key Storage:**
 - **Gemini API Key:** [`ocr.js:9`](medicineList_generator/ocr.js:9)
   ```javascript
-  const GEMINI_API_KEY = 'AIzaSyBIfSBE9WqgAEX3gX4Hp-0_tnKtqFo_R3A';
+  const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY_HERE';
   ```
   - **Status:** ❌ **CRITICAL** - Exposed in client-side JavaScript
   - **Risk:** Anyone can view source and steal API key

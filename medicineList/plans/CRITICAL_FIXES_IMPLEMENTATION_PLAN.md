@@ -120,7 +120,7 @@ This document provides a step-by-step implementation plan to address all critica
 4. **Update frontend ocr.js to call backend endpoint**
    ```javascript
    // Remove this line from medicineList_generator/ocr.js:7
-   // const GEMINI_API_KEY = 'AIzaSyC3e0oJebdSKdlNRNYrYOwxGjhX433zmVA';
+   // const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY_HERE';
 
    // Replace scanPrescription function
    async function scanPrescription() {
