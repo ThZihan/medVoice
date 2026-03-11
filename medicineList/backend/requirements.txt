@@ -1,0 +1,27 @@
+# Core Django
+Django==5.0.1
+djangorestframework==3.14.0
+python-decouple==3.8
+
+# Database
+# PostgreSQL driver: Use psycopg2-binary for PythonAnywhere, use psycopg2 for VPS/production
+# See docs/deployment/POSTGRESQL_DRIVER_PRODUCTION_GUIDE.md for details
+psycopg2-binary==2.9.9  # PostgreSQL driver (OK for PythonAnywhere, use psycopg2 for VPS)
+mysqlclient==2.2.0  # MySQL driver (legacy support)
+
+# AI Services
+requests==2.31.0
+
+# PDF Generation
+reportlab==4.0.7
+
+# Celery for async tasks
+celery==5.3.4
+redis==5.0.1
+
+# PostgreSQL Vector Search (MedVoice integration)
+pgvector==0.2.4
+
+# Additional utilities
+pillow==10.1.0  # Image processing
+python-dotenv==1.0.0  # Environment variables

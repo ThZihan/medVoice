@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Easy-to-use medicine list generator for creating medication schedules">
+    <title>Medicine List Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header" role="banner">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1 class="title">Medicine List Generator</h1>
+                    <p class="subtitle">Easy-to-read medication schedule</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-color" id="colorPickerBtn" title="Color Settings" aria-label="Color Settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                            <circle cx="13.5" cy="6.5" r=".5"/>
+                            <circle cx="17.5" cy="10.5" r=".5"/>
+                            <circle cx="8.5" cy="7.5" r=".5"/>
+                            <circle cx="6.5" cy="12.5" r=".5"/>
+                            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+                        </svg>
+                        <span>Colors</span>
+                    </button>
+                    <button class="btn btn-logout" id="logoutBtn" title="Logout" aria-label="Logout">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1-2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+     
+        <main class="main-content" role="main">
+            <!-- Quick Actions Section -->
+            <section class="quick-actions-section" aria-labelledby="quick-actions-title">
+                <h2 id="quick-actions-title" class="quick-actions-title">Quick Actions</h2>
+                <div class="quick-actions-buttons">
+                    <button class="btn-gradient" id="ocrTriggerBtn" title="Extract from Image" aria-label="Extract medicines from image">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/>
+                            <line x1="16" y1="5" x2="22" y2="5"/>
+                            <line x1="19" y1="2" x2="19" y2="8"/>
+                            <circle cx="9" cy="9" r="2"/>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                        </svg>
+                        <span>Extract from Image</span>
+                    </button>
+                </div>
+            </section>
+    
+            <div class="form-container">
+                <section class="patient-section" aria-labelledby="patient-info-title">
+                    <div class="section-header">
+                        <h2 id="patient-info-title">Patient Information</h2>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="patientName">Patient Name</label>
+                            <input type="text" id="patientName" name="patientName" required
+                                   placeholder="Enter patient name" autocomplete="off" aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="patientAge">Age</label>
+                            <input type="number" id="patientAge" name="patientAge" required
+                                   placeholder="Age" min="1" max="150" aria-required="true">
+                        </div>
+                    </div>
+                </section>
+     
+                <section class="form-section" aria-labelledby="add-medicine-title">
+                    <div class="section-header">
+                        <h2 id="add-medicine-title">Add Medicine</h2>
+                        <span class="medicine-count" id="medicineCount" aria-live="polite">0</span>
+                    </div>
+     
+                    <form id="medicineForm" class="medicine-form" aria-label="Add medicine form">
+                        <div class="form-group autocomplete-container">
+                            <label for="medicineName">Medicine Name</label>
+                            <input type="text" id="medicineName" name="medicineName" required
+                                   placeholder="Search or type medicine" autocomplete="off" aria-required="true"
+                                   role="combobox" aria-autocomplete="list" aria-controls="autocompleteDropdown">
+                            <div class="autocomplete-dropdown" id="autocompleteDropdown" role="listbox"></div>
+                        </div>
+     
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="genericName">Generic Name</label>
+                                <input type="text" id="genericName" name="genericName" placeholder="Optional">
+                            </div>
+                            <div class="form-group">
+                                <label for="dose">Dosage</label>
+                                <input type="text" id="dose" name="dose" placeholder="e.g. 50mg">
+                            </div>
+                        </div>
+     
+                        <fieldset class="form-group">
+                            <legend>When to Take</legend>
+                            <div class="timing-group" role="group" aria-label="Select timing for medicine">
+                                <label class="timing-card">
+                                    <input type="checkbox" name="timing" value="morning" aria-label="Morning">
+                                    <div class="timing-content">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="M12 20v2"/><path d="M2 12h2"/></svg>
+                                        <span>Morning</span>
+                                    </div>
+                                </label>
+                                <label class="timing-card">
+                                    <input type="checkbox" name="timing" value="noon" aria-label="Noon">
+                                    <div class="timing-content">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/><path d="M16 12h2"/></svg>
+                                        <span>Noon</span>
+                                    </div>
+                                </label>
+                                <label class="timing-card">
+                                    <input type="checkbox" name="timing" value="night" aria-label="Night">
+                                    <div class="timing-content">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 4 12.79z"/></svg>
+                                        <span>Night</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </fieldset>
+     
+                        <div class="form-group">
+                            <label for="frequency">Frequency</label>
+                            <select id="frequency" name="frequency" required aria-required="true">
+                                <option value="Daily">Daily</option>
+                                <option value="per NEED">As Needed</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Only Friday">Friday Only</option>
+                                <option value="Except WED & THUR">No Wed & Thu</option>
+                            </select>
+                        </div>
+     
+                        <fieldset class="form-group">
+                            <legend>With Food</legend>
+                            <div class="food-group" role="radiogroup" aria-label="Select food timing">
+                                <label class="food-toggle">
+                                    <input type="radio" name="foodTiming" value="BEFORE FOOD" required aria-required="true">
+                                    <div class="toggle-content">Before Food</div>
+                                </label>
+                                <label class="food-toggle">
+                                    <input type="radio" name="foodTiming" value="AFTER FOOD">
+                                    <div class="toggle-content">After Food</div>
+                                </label>
+                            </div>
+                        </fieldset>
+     
+                        <div class="form-group">
+                            <label for="usedFor">Used For</label>
+                            <input type="text" id="usedFor" name="usedFor" placeholder="e.g. Blood pressure">
+                        </div>
+     
+                        <fieldset class="form-group">
+                            <legend>Instructions</legend>
+                            <div class="remarks-group" role="group" aria-label="Select special instructions">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="remarks" value="Complete full course">
+                                    <span>Complete full course</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="remarks" value="Not to lie down for 1 hour">
+                                    <span>Stay upright 1 hour</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="remarks" value="Take with plenty of water">
+                                    <span>Take with water</span>
+                                </label>
+                            </div>
+                            <input type="text" id="customRemarks" name="customRemarks" 
+                                   placeholder="Other instructions..." aria-label="Custom instructions">
+                        </fieldset>
+     
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Add Medicine</button>
+                            <button type="button" class="btn btn-secondary" id="clearForm">Clear</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+     
+            <section class="list-section" aria-labelledby="medicine-schedule-title">
+                <div class="section-header">
+                    <h2 id="medicine-schedule-title">Medicine Schedule</h2>
+                    <div class="list-actions">
+                        <button class="btn btn-secondary" id="clearAll" aria-label="Clear all medicines">Clear All</button>
+                    </div>
+                </div>
+     
+                <div class="medicine-list-wrapper">
+                    <div class="medicine-list" id="medicineList" role="list" aria-live="polite">
+                        <div class="empty-state" role="status">
+                            <div class="empty-icon" aria-hidden="true">💊</div>
+                            <p>No medicines yet</p>
+                            <p>Add medicines using the form</p>
+                        </div>
+                    </div>
+                    <div class="scroll-indicator" id="scrollIndicator" aria-hidden="true">
+                        <div class="scroll-indicator-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                            </svg>
+                        </div>
+                        <span class="scroll-indicator-text">Scroll Down to view more</span>
+                    </div>
+                </div>
+     
+                <div class="generate-actions">
+                    <button class="btn-gradient btn-primary btn" id="generatePDF" aria-label="Generate PDF of medicine schedule">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>Generate PDF</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+      
+        <!-- Edit Medicine Modal -->
+        <div id="editModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="edit-modal-title">Edit Medicine</h3>
+                    <button class="modal-close" onclick="closeEditModal()" aria-label="Close modal">×</button>
+                </div>
+                <form id="editMedicineForm" class="medicine-form" aria-label="Edit medicine form">
+                    <input type="hidden" id="editMedicineId" name="editMedicineId">
+                    
+                    <div class="form-group">
+                        <label for="editMedicineName">Medicine Name</label>
+                        <input type="text" id="editMedicineName" name="editMedicineName" required
+                               placeholder="Enter medicine name" autocomplete="off" aria-required="true">
+                    </div>
+      
+                    <div class="form-group">
+                        <label for="editGenericName">Generic Name</label>
+                        <input type="text" id="editGenericName" name="editGenericName" placeholder="Optional">
+                    </div>
+      
+                    <div class="form-group">
+                        <label for="editDose">Dosage</label>
+                        <input type="text" id="editDose" name="editDose" placeholder="e.g. 50mg">
+                    </div>
+      
+                    <fieldset class="form-group">
+                        <legend>When to Take</legend>
+                        <div class="timing-group" role="group" aria-label="Select timing for medicine">
+                            <label class="timing-card">
+                                <input type="checkbox" name="editTiming" value="morning" aria-label="Morning">
+                                <div class="timing-content">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="M12 20v2"/><path d="M2 12h2"/></svg>
+                                    <span>Morning</span>
+                                </div>
+                            </label>
+                            <label class="timing-card">
+                                <input type="checkbox" name="editTiming" value="noon" aria-label="Noon">
+                                <div class="timing-content">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/><path d="M16 12h2"/></svg>
+                                    <span>Noon</span>
+                                </div>
+                            </label>
+                            <label class="timing-card">
+                                <input type="checkbox" name="editTiming" value="night" aria-label="Night">
+                                <div class="timing-content">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 4 12.79z"/></svg>
+                                    <span>Night</span>
+                                </div>
+                            </label>
+                        </div>
+                    </fieldset>
+      
+                    <div class="form-group">
+                        <label for="editFrequency">Frequency</label>
+                        <select id="editFrequency" name="editFrequency" required aria-required="true">
+                            <option value="Daily">Daily</option>
+                            <option value="per NEED">As Needed</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Only Friday">Friday Only</option>
+                            <option value="Except WED & THUR">No Wed & Thu</option>
+                        </select>
+                    </div>
+      
+                    <fieldset class="form-group">
+                        <legend>With Food</legend>
+                        <div class="food-group" role="radiogroup" aria-label="Select food timing">
+                            <label class="food-toggle">
+                                <input type="radio" name="editFoodTiming" value="BEFORE FOOD" required aria-required="true">
+                                <div class="toggle-content">Before Food</div>
+                            </label>
+                            <label class="food-toggle">
+                                <input type="radio" name="editFoodTiming" value="AFTER FOOD">
+                                <div class="toggle-content">After Food</div>
+                            </label>
+                        </div>
+                    </fieldset>
+      
+                    <div class="form-group">
+                        <label for="editUsedFor">Used For</label>
+                        <input type="text" id="editUsedFor" name="editUsedFor" placeholder="e.g. Blood pressure">
+                    </div>
+      
+                    <fieldset class="form-group">
+                        <legend>Instructions</legend>
+                        <div class="remarks-group" role="group" aria-label="Select special instructions">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="editRemarks" value="Complete full course">
+                                <span>Complete full course</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="editRemarks" value="Not to lie down for 1 hour">
+                                <span>Stay upright 1 hour</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="editRemarks" value="Take with plenty of water">
+                                <span>Take with water</span>
+                            </label>
+                        </div>
+                        <input type="text" id="editCustomRemarks" name="editCustomRemarks"
+                               placeholder="Other instructions..." aria-label="Custom instructions">
+                    </fieldset>
+      
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+      
+        <!-- Color Picker Modal -->
+        <div class="modal-overlay" id="colorModalOverlay" aria-hidden="true"></div>
+        <div class="modal" id="colorModal" role="dialog" aria-modal="true" aria-labelledby="colorModalTitle">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="colorModalTitle">Color Settings</h2>
+                    <button class="modal-close" onclick="closeColorModal()" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form id="colorForm" class="medicine-form">
+                    <!-- Palette Selection -->
+                    <div class="form-group">
+                        <label>Choose Palette</label>
+                        <div class="palette-options">
+                            <label class="palette-option">
+                                <input type="radio" name="palette" value="default" checked>
+                                <div class="palette-preview">
+                                    <div class="palette-color" style="background: #22c55e;"></div>
+                                    <div class="palette-color" style="background: #f59e0b;"></div>
+                                    <div class="palette-color" style="background: #3b82f6;"></div>
+                                </div>
+                                <span class="palette-name">Default</span>
+                            </label>
+                            <label class="palette-option">
+                                <input type="radio" name="palette" value="vibrant">
+                                <div class="palette-preview">
+                                    <div class="palette-color" style="background: #00c853;"></div>
+                                    <div class="palette-color" style="background: #ffeb3b;"></div>
+                                    <div class="palette-color" style="background: #ff1744;"></div>
+                                </div>
+                                <span class="palette-name">Vibrant</span>
+                            </label>
+                            <label class="palette-option">
+                                <input type="radio" name="palette" value="custom">
+                                <span class="palette-name">Custom</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Base Colors -->
+                    <div class="form-group">
+                        <label>Base Colors</label>
+                        <div class="color-inputs">
+                            <div class="color-input-group">
+                                <label for="morningColor">Morning</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="morningColor" name="morningColor" value="#22c55e">
+                                    <input type="text" id="morningColorText" class="color-text" value="#22c55e" maxlength="7">
+                                </div>
+                            </div>
+                            <div class="color-input-group">
+                                <label for="noonColor">Noon</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="noonColor" name="noonColor" value="#f59e0b">
+                                    <input type="text" id="noonColorText" class="color-text" value="#f59e0b" maxlength="7">
+                                </div>
+                            </div>
+                            <div class="color-input-group">
+                                <label for="nightColor">Night</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="nightColor" name="nightColor" value="#3b82f6">
+                                    <input type="text" id="nightColorText" class="color-text" value="#3b82f6" maxlength="7">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Combined Colors -->
+                    <div class="form-group">
+                        <label>Combined Colors</label>
+                        <div class="color-inputs">
+                            <div class="color-input-group">
+                                <label for="morningNoonColor">Morning + Noon</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="morningNoonColor" name="morningNoonColor" value="#84cc16">
+                                    <input type="text" id="morningNoonColorText" class="color-text" value="#84cc16" maxlength="7">
+                                </div>
+                                <label class="custom-toggle">
+                                    <input type="checkbox" id="customMorningNoon">
+                                    <span>Custom</span>
+                                </label>
+                            </div>
+                            <div class="color-input-group">
+                                <label for="morningNightColor">Morning + Night</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="morningNightColor" name="morningNightColor" value="#06b6d4">
+                                    <input type="text" id="morningNightColorText" class="color-text" value="#06b6d4" maxlength="7">
+                                </div>
+                                <label class="custom-toggle">
+                                    <input type="checkbox" id="customMorningNight">
+                                    <span>Custom</span>
+                                </label>
+                            </div>
+                            <div class="color-input-group">
+                                <label for="noonNightColor">Noon + Night</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="noonNightColor" name="noonNightColor" value="#8b5cf6">
+                                    <input type="text" id="noonNightColorText" class="color-text" value="#8b5cf6" maxlength="7">
+                                </div>
+                                <label class="custom-toggle">
+                                    <input type="checkbox" id="customNoonNight">
+                                    <span>Custom</span>
+                                </label>
+                            </div>
+                            <div class="color-input-group">
+                                <label for="allDayColor">All Day</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="allDayColor" name="allDayColor" value="#6366f1">
+                                    <input type="text" id="allDayColorText" class="color-text" value="#6366f1" maxlength="7">
+                                </div>
+                                <label class="custom-toggle">
+                                    <input type="checkbox" id="customAllDay">
+                                    <span>Custom</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Colors</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeColorModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+      
+        <footer role="contentinfo">
+            <p>&copy; 2026 Medicine List Generator. Developed by Tahfizul Hasan Zihan.</p>
+        </footer>
+    </div>
+  
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/medicines.js"></script>
+    <script src="/static/js/script.js"></script>
+    <script src="/static/js/ocr.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/colors.js"></script>
+    <script>
+        // Initialize logout button - execute immediately (DOMContentLoaded already fired)
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    logout();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
