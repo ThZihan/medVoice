@@ -39,8 +39,10 @@ GEMINI_MODEL = config('GEMINI_MODEL', default='gemini-2.0-flash')
 # GLM API key for content generation and moderation
 GLM_API_KEY = config('GLM_API_KEY', default='')
 
-# GLM model for content generation (default: glm-4)
-GLM_MODEL = config('GLM_MODEL', default='glm-4')
+# GLM model for content generation
+# Multi-model fallback is enabled by default (tries: glm-4.7-flash → glm-4.5-flash)
+# Set GLM_MODEL in .env to override and use a specific model only
+GLM_MODEL = config('GLM_MODEL', default=None)
 
 # GLM API URL (default: Zhipu AI endpoint)
 GLM_API_URL = config('GLM_API_URL', default='https://open.bigmodel.cn/api/paas/v4/chat/completions')

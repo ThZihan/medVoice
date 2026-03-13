@@ -1,0 +1,127 @@
+/**
+ * MedVoice BD - Design System Variables
+ * Warm, trusting aesthetic with healthcare-appropriate calming feel
+ */
+
+:root {
+    /* === Colors === */
+    
+    /* Background Colors */
+    --color-bg: #F5F0E8;
+    --color-card: #FFFDF8;
+    --color-elevated: #EEF8F8;
+    
+    /* Primary Colors - Teal */
+    --color-teal: #1A6B6B;
+    --color-teal-light: #2A9090;
+    --color-teal-dark: #145A5A;
+    
+    /* Accent Colors - Amber */
+    --color-amber: #D4863A;
+    --color-amber-light: #F0A855;
+    --color-amber-dark: #B8702E;
+    
+    /* Text Colors */
+    --color-text: #1C1C1C;
+    --color-text-muted: #6B6560;
+    --color-text-light: #9A958F;
+    
+    /* Functional Colors */
+    --color-border: #E2DAD0;
+    --color-border-light: #F0EDE8;
+    
+    /* Status Colors */
+    --color-success: #2E7D4F;
+    --color-success-bg: #E8F5EE;
+    --color-error: #C0392B;
+    --color-error-bg: #FDECEA;
+    --color-warning: #D4863A;
+    --color-warning-bg: #FEF3E8;
+    --color-info: #5B4A8A;
+    --color-info-bg: #F0EDE8;
+    
+    /* WhatsApp Green */
+    --color-whatsapp: #25D366;
+    --color-whatsapp-light: #DCF8C6;
+    
+    /* === Spacing === */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 24px;
+    --space-2xl: 32px;
+    --space-3xl: 48px;
+    
+    /* === Border Radius === */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 14px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+    --radius-pill: 22px;
+    --radius-full: 50%;
+    
+    /* === Shadows === */
+    --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.2);
+    --shadow-focus: 0 0 0 3px rgba(26, 107, 107, 0.2);
+    
+    /* === Transitions === */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* === Typography === */
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+    
+    /* Font Sizes */
+    --text-xs: 11px;
+    --text-sm: 12px;
+    --text-base: 14px;
+    --text-lg: 15px;
+    --text-xl: 18px;
+    --text-2xl: 22px;
+    --text-3xl: 28px;
+    --text-4xl: 36px;
+    
+    /* Font Weights */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    
+    /* Line Heights */
+    --leading-tight: 1.4;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.6;
+    --leading-loose: 1.7;
+    
+    /* === Layout === */
+    --container-max-width: 680px;
+    --header-height: 70px;
+    --modal-max-width: 560px;
+    
+    /* === Z-Index === */
+    --z-dropdown: 100;
+    --z-sticky: 50;
+    --z-modal: 100;
+    --z-modal-backdrop: 99;
+    --z-tooltip: 200;
+    
+    /* === Touch Targets === */
+    --touch-target: 44px;
+    
+    /* === Gradients === */
+    --gradient-teal: linear-gradient(135deg, #1A6B6B 0%, #2A8080 60%, #3A6B9A 100%);
+    --gradient-teal-light: linear-gradient(135deg, #2A9090 0%, #3A9A9A 100%);
+    --gradient-amber: linear-gradient(135deg, #D4863A 0%, #E0964A 100%);
+    
+    /* === Breakpoints === */
+    --breakpoint-mobile: 767px;
+    --breakpoint-tablet: 768px;
+    --breakpoint-desktop: 1024px;
+}

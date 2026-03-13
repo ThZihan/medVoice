@@ -1,0 +1,337 @@
+/**
+ * MedVoice BD - Responsive Styles
+ * Mobile-first responsive design
+ */
+
+/* === Mobile (< 768px) === */
+@media (max-width: 767px) {
+    /* Container */
+    .container {
+        padding: 0 var(--space-md);
+    }
+    
+    /* Header */
+    .header-content {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    /* Navigation Tabs */
+    .nav-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .nav-tab {
+        padding: var(--space-sm) var(--space-md);
+        white-space: nowrap;
+    }
+    
+    /* AI Banner */
+    .ai-banner {
+        padding: var(--space-lg);
+    }
+    
+    .ai-banner-title {
+        font-size: var(--text-base);
+    }
+    
+    .ai-banner-description {
+        font-size: var(--text-sm);
+    }
+    
+    /* Write Review CTA */
+    .write-review-cta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+    
+    .feature-badges {
+        margin-left: 0;
+        flex-wrap: wrap;
+    }
+    
+    /* Filter Bar */
+    .filter-bar {
+        padding-bottom: var(--space-sm);
+    }
+    
+    /* Post Card */
+    .post-card {
+        padding: var(--space-md);
+    }
+    
+    .post-header {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+    
+    .post-doctor {
+        font-size: var(--text-base);
+    }
+    
+    .post-tags {
+        gap: var(--space-xs);
+    }
+    
+    .post-actions {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+    }
+    
+    /* Modal */
+    .modal-content {
+        max-width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        padding: var(--space-lg);
+    }
+    
+    .modal-backdrop {
+        backdrop-filter: none;
+    }
+    
+    /* Mode Grid */
+    .mode-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Search Input Group */
+    .search-input-group {
+        flex-direction: column;
+    }
+    
+    /* Buttons */
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .header-actions .btn {
+        width: auto;
+    }
+}
+
+/* === Tablet (768px - 1024px) === */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Container */
+    .container {
+        padding: 0 var(--space-lg);
+    }
+    
+    /* Header */
+    .header-content {
+        flex-direction: row;
+    }
+    
+    /* AI Banner */
+    .ai-banner {
+        padding: var(--space-xl);
+    }
+    
+    /* Write Review CTA */
+    .write-review-cta {
+        flex-direction: row;
+    }
+    
+    /* Post Card */
+    .post-card {
+        padding: var(--space-lg);
+    }
+    
+    /* Modal */
+    .modal-content {
+        max-width: var(--modal-max-width);
+        padding: var(--space-xl);
+    }
+    
+    /* Mode Grid */
+    .mode-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    /* Search Input Group */
+    .search-input-group {
+        flex-direction: row;
+    }
+}
+
+/* === Desktop (> 1024px) === */
+@media (min-width: 1024px) {
+    /* Container */
+    .container {
+        padding: 0 var(--space-xl);
+    }
+    
+    /* Header */
+    .header-content {
+        padding: var(--space-md) 0;
+    }
+    
+    /* AI Banner */
+    .ai-banner {
+        padding: var(--space-xl);
+    }
+    
+    /* Post Card */
+    .post-card {
+        padding: var(--space-xl);
+    }
+    
+    /* Modal */
+    .modal-content {
+        max-width: var(--modal-max-width);
+        padding: var(--space-2xl);
+    }
+    
+    /* Hover Effects */
+    .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .mode-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+}
+
+/* === Print Styles === */
+@media print {
+    .header,
+    .ai-banner,
+    .write-review-cta,
+    .filter-bar,
+    .load-more,
+    .modal {
+        display: none !important;
+    }
+    
+    .post-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+    
+    body {
+        background: #fff;
+    }
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* === High Contrast === */
+@media (prefers-contrast: high) {
+    :root {
+        --color-border: #000;
+        --color-text-muted: #333;
+    }
+    
+    .post-card,
+    .card,
+    .modal-content {
+        border-width: 2px;
+    }
+}
+
+/* === Dark Mode (Future) === */
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles can be added here in the future */
+}
+
+/* === Landscape Mobile === */
+@media (max-width: 767px) and (orientation: landscape) {
+    .ai-banner {
+        padding: var(--space-md);
+    }
+    
+    .modal-content {
+        padding: var(--space-md);
+    }
+}
+
+/* === Large Screens === */
+@media (min-width: 1440px) {
+    .container {
+        max-width: 800px;
+    }
+}
+
+/* === Extra Small Screens === */
+@media (max-width: 375px) {
+    .container {
+        padding: 0 var(--space-sm);
+    }
+    
+    .logo-text {
+        font-size: var(--text-xl);
+    }
+    
+    .nav-tab {
+        padding: var(--space-sm);
+        font-size: var(--text-xs);
+    }
+    
+    .btn {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: var(--text-xs);
+    }
+}
+
+/* === Accessibility - Focus Visible === */
+@media (hover: none) {
+    .btn:hover,
+    .nav-tab:hover,
+    .filter-btn:hover,
+    .mode-card:hover {
+        transform: none;
+    }
+}
+
+/* === Touch Devices === */
+@media (hover: none) and (pointer: coarse) {
+    .btn,
+    .nav-tab,
+    .filter-btn,
+    .mode-card {
+        min-height: 48px;
+        min-width: 48px;
+    }
+}
+
+/* === Scrollbar Styling === */
+@media (min-width: 768px) {
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: var(--color-bg);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-border);
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-text-muted);
+    }
+}

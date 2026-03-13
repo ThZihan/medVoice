@@ -2,10 +2,11 @@
 GLM API Service
 
 This module provides AI-powered content generation and moderation functionality
-using the GLM-4 API for medical review processing.
+using the GLM API for medical review processing with multi-model fallback support.
 
 Key Features:
 - Server-side API key configuration
+- Multi-model fallback (GLM-4.7-Flash → GLM-4.5-Flash)
 - Review generation from Q&A answers
 - Content moderation for medical content
 - Review structuring and formatting
@@ -29,10 +30,17 @@ class GLMAPIError(Exception):
 
 class GLMAPIService:
     """
-    Service for interacting with GLM-4 API.
+    Service for interacting with GLM API with multi-model fallback support.
     
     Handles content generation, moderation, and review structuring operations.
+    Attempts models in order: GLM-4.7-Flash → GLM-4.5-Flash → fallback model.
     """
+    
+    # Model fallback order (primary → secondary → fallback)
+    MODELS_TO_TRY = [
+        'glm-4.7-flash',  # Primary: Latest flash model
+        'glm-4.5-flash',  # Secondary: Previous flash model
+    ]
     
     def __init__(self, api_key=None, model=None, api_url=None):
         """
@@ -40,11 +48,11 @@ class GLMAPIService:
         
         Args:
             api_key: Optional API key. If not provided, will use from settings.
-            model: Optional model name. Defaults to GLM-4.
+            model: Optional model name. If not provided, will use multi-model fallback.
             api_url: Optional API URL. If not provided, will use from settings.
         """
         self.api_key = api_key or settings.GLM_API_KEY
-        self.model = model or getattr(settings, 'GLM_MODEL', 'glm-4')
+        self.model = model or getattr(settings, 'GLM_MODEL', None)
         self.api_url = api_url or getattr(settings, 'GLM_API_URL', 'https://open.bigmodel.cn/api/paas/v4/chat/completions')
         self.timeout = 30  # 30 second timeout
         
@@ -322,50 +330,84 @@ IMPORTANT:
 """
         return prompt
     
-    def _call_api(self, messages: List[Dict], model: str = 'glm-4') -> Dict:
+    def _call_api(self, messages: List[Dict], model: str = None) -> Dict:
         """
-        Make an API call to GLM-4.
+        Make an API call to GLM with multi-model fallback support.
         
         Args:
             messages: List of message dictionaries
-            model: GLM model to use
+            model: GLM model to use. If None, will try models in fallback order.
             
         Returns:
             dict: The API response
             
         Raises:
-            GLMAPIError: If the API call fails
+            GLMAPIError: If all API calls fail
         """
-        headers = {
-            'Authorization': f'Bearer {self.api_key}',
-            'Content-Type': 'application/json'
-        }
+        # Determine which models to try
+        if model:
+            models_to_try = [model]
+        elif self.model:
+            models_to_try = [self.model]
+        else:
+            models_to_try = self.MODELS_TO_TRY
         
-        payload = {
-            'model': model,
-            'messages': messages,
-            'temperature': 0.1,  # Lower temperature for more deterministic JSON output
-            'max_tokens': 4000
-        }
+        last_error = None
         
-        try:
-            response = requests.post(
-                self.api_url,
-                headers=headers,
-                json=payload,
-                timeout=self.timeout
-            )
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.Timeout:
-            logger.error('GLM API request timed out')
-            raise GLMAPIError('API request timed out')
-        except requests.exceptions.RequestException as e:
-            logger.error(f'GLM API request failed: {str(e)}')
-            raise GLMAPIError(f'API request failed: {str(e)}')
-        except json.JSONDecodeError as e:
-            logger.error(f'Failed to parse GLM API response: {str(e)}')
-            raise GLMAPIError(f'Invalid API response: {str(e)}')
+        for current_model in models_to_try:
+            try:
+                logger.info(f'Attempting GLM API call with model: {current_model}')
+                
+                headers = {
+                    'Authorization': f'Bearer {self.api_key}',
+                    'Content-Type': 'application/json'
+                }
+                
+                payload = {
+                    'model': current_model,
+                    'messages': messages,
+                    'temperature': 0.1,  # Lower temperature for more deterministic JSON output
+                    'max_tokens': 4000
+                }
+                
+                response = requests.post(
+                    self.api_url,
+                    headers=headers,
+                    json=payload,
+                    timeout=self.timeout
+                )
+                response.raise_for_status()
+                
+                logger.info(f'Successfully called GLM API with model: {current_model}')
+                return response.json()
+                
+            except requests.exceptions.Timeout:
+                last_error = f'API request timed out with model {current_model}'
+                logger.warning(f'{last_error}, trying next model...')
+                continue
+            except requests.exceptions.RequestException as e:
+                # Check if it's a rate limit or server error that might be model-specific
+                status_code = getattr(e.response, 'status_code', None) if hasattr(e, 'response') else None
+                
+                if status_code in [429, 500, 502, 503, 504]:
+                    # Rate limit or server error - try next model
+                    last_error = f'API request failed with status {status_code} for model {current_model}: {str(e)}'
+                    logger.warning(f'{last_error}, trying next model...')
+                    continue
+                else:
+                    # Other errors - don't retry
+                    last_error = f'API request failed for model {current_model}: {str(e)}'
+                    logger.error(last_error)
+                    raise GLMAPIError(last_error)
+            except json.JSONDecodeError as e:
+                last_error = f'Failed to parse GLM API response from model {current_model}: {str(e)}'
+                logger.warning(f'{last_error}, trying next model...')
+                continue
+        
+        # All models failed
+        error_msg = f'All GLM API calls failed. Last error: {last_error}'
+        logger.error(error_msg)
+        raise GLMAPIError(error_msg)
     
     def _parse_response(self, response: Dict) -> Dict:
         """
@@ -409,17 +451,17 @@ IMPORTANT:
         model: str = None
     ) -> Dict:
         """
-        Generate a medical review from Q&A answers.
+        Generate a medical review from Q&A answers with multi-model fallback.
         
         Args:
             answers: List of Q&A answer dictionaries
             patient_name: Optional patient name
             doctor_name: Optional doctor name
             review_type: Type of review ('clinical' or 'medvoice')
-            model: GLM model to use (defaults to instance model)
+            model: GLM model to use. If None, will try models in fallback order.
             
         Returns:
-            dict: Generated review with success status
+            dict: Generated review with success status and model used
             
         Example:
             >>> answers = [
@@ -437,9 +479,6 @@ IMPORTANT:
                     'error': 'Invalid answers: must be a non-empty list'
                 }
             
-            # Use instance model if not specified
-            model = model or self.model
-            
             # Construct prompt
             prompt = self._construct_prompt(
                 'review_generation',
@@ -449,20 +488,24 @@ IMPORTANT:
                 review_type=review_type
             )
             
-            # Call API
+            # Call API with multi-model fallback
             messages = [
                 {'role': 'system', 'content': 'You are a medical documentation specialist.'},
                 {'role': 'user', 'content': prompt}
             ]
             
-            response = self._call_api(messages, model or self.model)
+            response = self._call_api(messages, model)
             result = self._parse_response(response)
             
-            logger.info(f'Successfully generated review from {len(answers)} Q&A answers')
+            # Extract model used from response
+            model_used = response.get('model', model or 'unknown')
+            
+            logger.info(f'Successfully generated review from {len(answers)} Q&A answers using model: {model_used}')
             
             return {
                 'success': True,
-                'review': result
+                'review': result,
+                'model_used': model_used
             }
             
         except GLMAPIError as e:
@@ -480,14 +523,14 @@ IMPORTANT:
     
     def moderate_content(self, content: str, model: str = None) -> Dict:
         """
-        Moderate medical content for safety and accuracy.
+        Moderate medical content for safety and accuracy with multi-model fallback.
         
         Args:
             content: The content to moderate
-            model: GLM model to use (defaults to instance model)
+            model: GLM model to use. If None, will try models in fallback order.
             
         Returns:
-            dict: Moderation results with safety assessment
+            dict: Moderation results with safety assessment and model used
             
         Example:
             >>> service = GLMAPIService()
@@ -506,20 +549,24 @@ IMPORTANT:
             # Construct prompt
             prompt = self._construct_prompt('moderation', content)
             
-            # Call API
+            # Call API with multi-model fallback
             messages = [
                 {'role': 'system', 'content': 'You are a content moderation specialist for medical content.'},
                 {'role': 'user', 'content': prompt}
             ]
             
-            response = self._call_api(messages, model or self.model)
+            response = self._call_api(messages, model)
             result = self._parse_response(response)
             
-            logger.info(f'Successfully moderated content (length: {len(content)})')
+            # Extract model used from response
+            model_used = response.get('model', model or 'unknown')
+            
+            logger.info(f'Successfully moderated content (length: {len(content)}) using model: {model_used}')
             
             return {
                 'success': True,
-                'moderation': result
+                'moderation': result,
+                'model_used': model_used
             }
             
         except GLMAPIError as e:
@@ -537,14 +584,14 @@ IMPORTANT:
     
     def structure_review(self, content: str, model: str = None) -> Dict:
         """
-        Structure and format medical review content.
+        Structure and format medical review content with multi-model fallback.
         
         Args:
             content: The content to structure
-            model: GLM model to use (defaults to instance model)
+            model: GLM model to use. If None, will try models in fallback order.
             
         Returns:
-            dict: Structured review
+            dict: Structured review with model used
             
         Example:
             >>> service = GLMAPIService()
@@ -563,20 +610,24 @@ IMPORTANT:
             # Construct prompt
             prompt = self._construct_prompt('structuring', content)
             
-            # Call API
+            # Call API with multi-model fallback
             messages = [
                 {'role': 'system', 'content': 'You are a medical documentation specialist.'},
                 {'role': 'user', 'content': prompt}
             ]
             
-            response = self._call_api(messages, model or self.model)
+            response = self._call_api(messages, model)
             result = self._parse_response(response)
             
-            logger.info(f'Successfully structured review content (length: {len(content)})')
+            # Extract model used from response
+            model_used = response.get('model', model or 'unknown')
+            
+            logger.info(f'Successfully structured review content (length: {len(content)}) using model: {model_used}')
             
             return {
                 'success': True,
-                'structured_review': result
+                'structured_review': result,
+                'model_used': model_used
             }
             
         except GLMAPIError as e:

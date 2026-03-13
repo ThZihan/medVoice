@@ -86,9 +86,9 @@ async function handleLogin(event) {
             successMessage.textContent = result.message;
             successMessage.style.display = 'block';
             
-            // Redirect to index page after a short delay
+            // Redirect to home page after a short delay
             setTimeout(() => {
-                window.location.href = '/index/';
+                window.location.href = '/home/';
             }, 1000);
         } else {
             // Show error message
@@ -199,7 +199,7 @@ async function handleRegister(event) {
 // Check if user is logged in
 async function isLoggedIn() {
     try {
-        const response = await fetch('/index/', {
+        const response = await fetch('/home/', {
             method: 'GET',
             credentials: 'include'
         });
@@ -213,7 +213,7 @@ async function isLoggedIn() {
 // Get current user
 async function getCurrentUser() {
     try {
-        const response = await fetch('/index/', {
+        const response = await fetch('/home/', {
             method: 'GET',
             credentials: 'include'
         });
