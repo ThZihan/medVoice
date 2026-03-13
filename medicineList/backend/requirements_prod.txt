@@ -1,0 +1,17 @@
+# Production requirements — use this file on VPS/server deployments
+# instead of requirements.txt
+# 
+# Key difference: psycopg2 (compiled from source) instead of 
+# psycopg2-binary (pre-built binary with known SSL/performance 
+# limitations in production)
+#
+# Install on server: pip install -r requirements_prod.txt
+# Requires: libpq-dev and python3-dev system packages
+# Server command: sudo apt-get install libpq-dev python3-dev
+
+-r requirements.txt
+
+# Override the binary driver with the compiled version
+psycopg2==2.9.9
+# Remove the binary version — comment out psycopg2-binary in 
+# requirements.txt when using this file
