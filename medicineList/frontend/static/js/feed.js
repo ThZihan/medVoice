@@ -96,7 +96,11 @@ async function loadFeed(tab = currentTab, filter = currentFilter, page = 1, appe
     const feedContainer = document.getElementById('reviewFeed');
     
     if (!append) {
-        showLoading(feedContainer, 'Loading reviews...');
+        if (typeof createSkeletonCard === 'function') {
+            feedContainer.innerHTML = Array(3).fill(createSkeletonCard()).join('');
+        } else {
+            showLoading(feedContainer, 'Loading reviews...');
+        }
     }
     
     try {
@@ -145,6 +149,34 @@ async function loadFeed(tab = currentTab, filter = currentFilter, page = 1, appe
     } finally {
         isLoading = false;
     }
+}
+
+/**
+ * Create skeleton card HTML string
+ */
+function createSkeletonCard() {
+    return `
+        <article class="post-card skeleton-card" aria-hidden="true" style="pointer-events: none;">
+            <div class="post-header" style="opacity: 0.7;">
+                <div class="skeleton-element" style="width: 40px; height: 40px; border-radius: 50%; animation: pulse-skel 1.5s infinite ease-in-out; background: var(--color-border);"></div>
+                <div class="post-author" style="width: 100%;">
+                    <div class="skeleton-element" style="width: 40%; height: 16px; border-radius: 4px; margin-bottom: 8px; animation: pulse-skel 1.5s infinite ease-in-out; background: var(--color-border);"></div>
+                    <div class="skeleton-element" style="width: 60%; height: 12px; border-radius: 4px; margin-bottom: 8px; animation: pulse-skel 1.5s infinite ease-in-out 0.2s; background: var(--color-border);"></div>
+                    <div class="skeleton-element" style="width: 30%; height: 14px; border-radius: 4px; animation: pulse-skel 1.5s infinite ease-in-out 0.4s; background: var(--color-border);"></div>
+                </div>
+            </div>
+            <div style="margin-top: 24px;">
+                <div class="skeleton-element" style="width: 100%; height: 14px; border-radius: 4px; margin-bottom: 8px; animation: pulse-skel 1.5s infinite ease-in-out 0.1s; background: var(--color-border);"></div>
+                <div class="skeleton-element" style="width: 95%; height: 14px; border-radius: 4px; margin-bottom: 8px; animation: pulse-skel 1.5s infinite ease-in-out 0.3s; background: var(--color-border);"></div>
+                <div class="skeleton-element" style="width: 80%; height: 14px; border-radius: 4px; animation: pulse-skel 1.5s infinite ease-in-out 0.5s; background: var(--color-border);"></div>
+            </div>
+            <div class="post-actions" style="margin-top: 24px; opacity: 0.7; display: flex; gap: 12px;">
+                <div class="skeleton-element" style="width: 60px; height: 24px; border-radius: 12px; animation: pulse-skel 1.5s infinite ease-in-out 0.2s; background: var(--color-border);"></div>
+                <div class="skeleton-element" style="width: 60px; height: 24px; border-radius: 12px; animation: pulse-skel 1.5s infinite ease-in-out 0.4s; background: var(--color-border);"></div>
+                <div class="skeleton-element" style="width: 100px; height: 24px; border-radius: 12px; animation: pulse-skel 1.5s infinite ease-in-out 0.6s; background: var(--color-border);"></div>
+            </div>
+        </article>
+    `;
 }
 
 /**

@@ -7,42 +7,42 @@
     /* === Colors === */
     
     /* Background Colors */
-    --color-bg: #F5F0E8;
-    --color-card: #FFFDF8;
-    --color-elevated: #EEF8F8;
+    --color-bg: #0f0f0f;
+    --color-card: #151515;
+    --color-elevated: #1f1f1f;
     
-    /* Primary Colors - Teal */
-    --color-teal: #1A6B6B;
-    --color-teal-light: #2A9090;
-    --color-teal-dark: #145A5A;
+    /* Primary Colors - Teal (Secondary) */
+    --color-teal: #008080;
+    --color-teal-light: #00cccc;
+    --color-teal-dark: #005555;
     
-    /* Accent Colors - Amber */
-    --color-amber: #D4863A;
-    --color-amber-light: #F0A855;
-    --color-amber-dark: #B8702E;
+    /* Accent Colors - Coral (Primary) */
+    --color-amber: #ff5e3a;
+    --color-amber-light: #ff8c73;
+    --color-amber-dark: #cc4b2e;
     
     /* Text Colors */
-    --color-text: #1C1C1C;
-    --color-text-muted: #6B6560;
-    --color-text-light: #9A958F;
+    --color-text: #f5f5f5;
+    --color-text-muted: #888888;
+    --color-text-light: #aaaaaa;
     
     /* Functional Colors */
-    --color-border: #E2DAD0;
-    --color-border-light: #F0EDE8;
+    --color-border: rgba(255, 255, 255, 0.15);
+    --color-border-light: rgba(255, 255, 255, 0.05);
     
     /* Status Colors */
-    --color-success: #2E7D4F;
-    --color-success-bg: #E8F5EE;
-    --color-error: #C0392B;
-    --color-error-bg: #FDECEA;
-    --color-warning: #D4863A;
-    --color-warning-bg: #FEF3E8;
-    --color-info: #5B4A8A;
-    --color-info-bg: #F0EDE8;
+    --color-success: #00c853;
+    --color-success-bg: rgba(0, 200, 83, 0.1);
+    --color-error: #ff1744;
+    --color-error-bg: rgba(255, 23, 68, 0.1);
+    --color-warning: #ffeb3b;
+    --color-warning-bg: rgba(255, 235, 59, 0.1);
+    --color-info: #008080;
+    --color-info-bg: rgba(0, 128, 128, 0.1);
     
     /* WhatsApp Green */
     --color-whatsapp: #25D366;
-    --color-whatsapp-light: #DCF8C6;
+    --color-whatsapp-light: rgba(37, 211, 102, 0.1);
     
     /* === Spacing === */
     --space-xs: 4px;
@@ -54,19 +54,19 @@
     --space-3xl: 48px;
     
     /* === Border Radius === */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 14px;
-    --radius-xl: 16px;
-    --radius-2xl: 20px;
-    --radius-pill: 22px;
+    --radius-sm: 0px;
+    --radius-md: 0px;
+    --radius-lg: 0px;
+    --radius-xl: 0px;
+    --radius-2xl: 0px;
+    --radius-pill: 0px;
     --radius-full: 50%;
     
     /* === Shadows === */
-    --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.2);
-    --shadow-focus: 0 0 0 3px rgba(26, 107, 107, 0.2);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+    --shadow-focus: 0 0 0 2px rgba(255, 94, 58, 0.5);
     
     /* === Transitions === */
     --transition-fast: 0.15s ease;
@@ -75,7 +75,7 @@
     
     /* === Typography === */
     --font-display: 'Playfair Display', serif;
-    --font-body: 'DM Sans', sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     
     /* Font Sizes */
     --text-xs: 11px;
@@ -116,9 +116,9 @@
     --touch-target: 44px;
     
     /* === Gradients === */
-    --gradient-teal: linear-gradient(135deg, #1A6B6B 0%, #2A8080 60%, #3A6B9A 100%);
-    --gradient-teal-light: linear-gradient(135deg, #2A9090 0%, #3A9A9A 100%);
-    --gradient-amber: linear-gradient(135deg, #D4863A 0%, #E0964A 100%);
+    --gradient-teal: linear-gradient(135deg, #005555 0%, #008080 60%, #00cccc 100%);
+    --gradient-teal-light: linear-gradient(135deg, #008080 0%, #00cccc 100%);
+    --gradient-amber: linear-gradient(135deg, #cc4b2e 0%, #ff5e3a 100%);
     
     /* === Breakpoints === */
     --breakpoint-mobile: 767px;

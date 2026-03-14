@@ -20,6 +20,8 @@
     white-space: nowrap;
     min-height: var(--touch-target);
     min-width: var(--touch-target);
+    position: relative;
+    overflow: hidden;
 }
 
 .btn:disabled {
@@ -29,15 +31,37 @@
 
 /* Primary Button */
 .btn-primary {
-    background: var(--color-teal);
-    color: #fff;
+    background-color: #111111; /* Extremely dark grey, similar to --bg-dark in login */
+    color: #ffffff;
     border: none;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0s var(--transition-fast);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: var(--color-teal-light);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
+    background-color: var(--color-teal); /* Initial hover color change */
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--color-amber); /* Accent color */
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 0;
+}
+
+.btn-primary:hover:not(:disabled)::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.btn-primary span {
+    position: relative;
+    z-index: 1;
 }
 
 .btn-primary:active:not(:disabled) {

@@ -272,7 +272,7 @@ def serve_home_page(request):
         patient = Patient.objects.get(user=request.user)
         return render(request, 'medvoice-home.html', {'patient': patient})
     except Patient.DoesNotExist:
-        return render(request, 'medvoice-home.html')
+        return render(request, 'home.html')
 
 
 @require_http_methods(["GET"])

@@ -18,6 +18,24 @@
     <link rel="stylesheet" href="/static/css/responsive.css">
 </head>
 <body>
+    <!-- Initial Loading Screen -->
+    <div id="initialLoader" style="position: fixed; inset: 0; background-color: var(--color-bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s ease;">
+        <img src="/static/images/icon.png" alt="MedVoice Logo" style="width: 80px; height: auto; margin-bottom: 20px; animation: pulse-logo 2s infinite ease-in-out;">
+        <h2 style="font-family: var(--font-display); color: var(--color-teal); font-size: 2rem; margin: 0; letter-spacing: 0.05em;">MedVoice</h2>
+        <style>
+            @keyframes pulse-logo {
+                0% { transform: scale(1); opacity: 0.8; }
+                50% { transform: scale(1.1); opacity: 1; }
+                100% { transform: scale(1); opacity: 0.8; }
+            }
+            @keyframes pulse-skel {
+                0% { opacity: 0.6; }
+                50% { opacity: 0.3; }
+                100% { opacity: 0.6; }
+            }
+        </style>
+    </div>
+
     <!-- Header -->
     <header class="header" role="banner">
         <div class="header-container">
@@ -90,8 +108,8 @@
                             doctor behavior, facility quality, and overall satisfaction.
                         </p>
                     </div>
-                    <button class="btn btn-white" id="aiSearchBannerBtn" aria-label="Try AI Search">
-                        Try AI Search
+                    <button class="btn btn-primary" id="aiSearchBannerBtn" aria-label="Try AI Search">
+                        <span>Try AI Search</span>
                     </button>
                 </div>
                 <div class="ai-banner-decoration circle-1" aria-hidden="true"></div>
@@ -229,6 +247,17 @@
     </div>
 
     <!-- JavaScript -->
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('initialLoader');
+            if (loader) {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.visibility = 'hidden', 500);
+                }, 800);
+            }
+        });
+    </script>
     <script src="/static/js/utils.js"></script>
     <script src="/static/js/auth.js"></script>
     <script src="/static/js/ai-search.js"></script>
