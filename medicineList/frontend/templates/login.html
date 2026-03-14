@@ -7,244 +7,505 @@
     <title>Login - Medicine List Generator</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <style>
-        /* Auth Page Styles */
-        .auth-page {
+        /* Modern Editorial / Magazine Aesthetic */
+        :root {
+            --bg-dark: #0f0f0f;
+            --bg-light: #ffffff;
+            --accent-primary: #ff5e3a; /* Vibrant Coral */
+            --accent-secondary: #008080; /* Muted Teal */
+            
+            --text-dark: #111111;
+            --text-light: #f5f5f5;
+            --text-muted: #888888;
+            
+            --border-color: rgba(0, 0, 0, 0.1);
+            --border-light: rgba(255, 255, 255, 0.2);
+            
+            --font-display: 'Playfair Display', serif;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Minimal Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Split Layout Container */
+        .split-layout {
+            display: flex;
             min-height: 100vh;
+            width: 100vw;
+        }
+
+        /* Hero Section (Left Side) */
+        .hero-section {
+            flex: 1;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, var(--accent-secondary) 0%, transparent 70%);
+            opacity: 0.15;
+            animation: pulse-glow 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.2) translate(-5%, 5%); }
+        }
+
+        .hero-header .logo {
+            font-family: var(--font-sans);
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-dot {
+            width: 8px; height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            z-index: 1;
+            max-width: 600px;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--text-light);
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title span {
+            display: block;
+            color: var(--accent-secondary);
+            font-style: italic;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 80%;
+            border-left: 2px solid var(--accent-primary);
+            padding-left: 1.5rem;
+        }
+
+        .ecosystem-badges {
+            display: flex;
+            gap: 1rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Form Section (Right Side) */
+        .form-section {
+            flex: 1;
+            background-color: var(--bg-light);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--bg-primary);
-            padding: var(--spacing-md);
+            padding: 2rem;
+            position: relative;
         }
-        
+
         .auth-container {
-            max-width: 420px;
             width: 100%;
-            background: var(--bg-surface);
-            border: 2px solid var(--border-primary);
-            padding: var(--spacing-lg);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 440px;
+            animation: fade-slide-up 0.8s var(--transition) forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
-        
-        .auth-title {
+
+        @keyframes fade-slide-up {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            margin-bottom: 3rem;
+        }
+
+        .auth-header h2 {
             font-family: var(--font-display);
-            font-size: var(--text-xl);
-            font-weight: 800;
-            color: var(--text-primary);
-            margin: 0 0 var(--spacing-md) 0;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-            text-align: center;
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
         }
-        
-        .auth-subtitle {
-            font-size: var(--text-sm);
-            color: var(--text-tertiary);
-            text-align: center;
-            margin-bottom: var(--spacing-lg);
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
         }
-        
+
         .auth-form {
             display: flex;
             flex-direction: column;
-            gap: var(--spacing-md);
+            gap: 1.5rem;
         }
-        
+
+        .form-group {
+            position: relative;
+        }
+
+        /* Floating Label Implementation */
+        .form-control {
+            width: 100%;
+            padding: 1rem 0 0.5rem 0;
+            font-size: 1rem;
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-bottom-color: var(--text-dark);
+        }
+
+        .form-label {
+            position: absolute;
+            left: 0;
+            top: 1rem;
+            font-size: 1rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: var(--transition);
+            transform-origin: left top;
+        }
+
+        /* Float the label when input is focused OR has content */
+        .form-control:focus ~ .form-label,
+        .form-control:not(:placeholder-shown) ~ .form-label {
+            transform: translateY(-1.2rem) scale(0.75);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* Button Styling */
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.25rem 2rem;
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--text-dark);
+            color: var(--bg-light);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--accent-primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 0;
+        }
+
+        .btn-primary:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Auth Toggle (Links) */
         .auth-toggle {
+            margin-top: 2rem;
             text-align: center;
-            margin-top: var(--spacing-lg);
-            padding-top: var(--spacing-lg);
-            border-top: 2px solid var(--border-secondary);
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
-        
-        .auth-toggle p {
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-            margin: 0;
-        }
-        
+
         .auth-toggle a {
-            color: var(--accent-primary);
+            color: var(--text-dark);
             text-decoration: none;
-            font-weight: 700;
-            transition: var(--transition-fast);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 2px;
         }
-        
-        .auth-toggle a:hover {
-            color: var(--accent-secondary);
-            text-decoration: underline;
+
+        .auth-toggle a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 1px;
+            background-color: var(--text-dark);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform var(--transition);
         }
-        
+
+        .auth-toggle a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Messages */
+        .error-message, .success-message {
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid;
+            font-size: 0.9rem;
+            display: none;
+        }
+
         .error-message {
-            background: rgba(220, 38, 38, 0.1);
-            color: var(--error);
-            padding: var(--spacing-md);
-            border: 2px solid var(--error);
-            border-radius: var(--border-radius-sm);
-            margin-bottom: var(--spacing-md);
-            display: none;
-            font-size: var(--text-sm);
-            font-weight: 600;
-            role="alert";
+            background: rgba(220, 38, 38, 0.05);
+            color: #dc2626;
+            border-color: #dc2626;
         }
-        
+
         .success-message {
-            background: rgba(0, 168, 107, 0.1);
-            color: var(--success);
-            padding: var(--spacing-md);
-            border: 2px solid var(--success);
-            border-radius: var(--border-radius-sm);
-            margin-bottom: var(--spacing-md);
-            display: none;
-            font-size: var(--text-sm);
-            font-weight: 600;
-            role="status";
+            background: rgba(0, 168, 107, 0.05);
+            color: #00a86b;
+            border-color: #00a86b;
         }
-        
-        /* Registration Modal Styles */
+
+        /* Registration Modal Layout Update */
         .register-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 10000;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
-            padding: var(--spacing-md);
+            opacity: 0;
+            transition: opacity var(--transition);
         }
-        
+
         .register-modal.active {
             display: flex;
-            animation: fadeIn 0.2s ease-out;
+            opacity: 1;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
+
         .register-modal-content {
-            background: var(--bg-surface);
-            border: 2px solid var(--border-primary);
-            border-radius: var(--border-radius-md);
-            max-width: 500px;
+            background: var(--bg-light);
             width: 100%;
+            max-width: 500px;
+            padding: 3rem;
+            position: relative;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border-radius: 0; /* Keep it sharply edged for editorial look */
         }
-        
+
+        .register-modal.active .register-modal-content {
+            transform: translateY(0) scale(1);
+        }
+
         .register-modal-header {
+            margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: var(--spacing-md);
-            border-bottom: 2px solid var(--border-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
         }
-        
-        .register-modal-header h2 {
+
+        .modal-title {
             font-family: var(--font-display);
-            font-size: var(--text-lg);
-            font-weight: 800;
-            color: var(--text-primary);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-        }
-        
-        .register-modal-close {
-            background: transparent;
-            border: none;
             font-size: 2rem;
-            color: var(--text-tertiary);
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .register-modal-close {
+            background: none; border: none;
+            font-size: 2rem;
             cursor: pointer;
-            padding: 0;
+            color: var(--text-muted);
+            transition: color 0.2s;
             line-height: 1;
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
-            min-height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition-fast);
         }
-        
+
         .register-modal-close:hover {
-            background: var(--bg-elevated);
-            color: var(--text-primary);
+            color: var(--text-dark);
         }
-        
-        .register-modal-body {
-            padding: var(--spacing-lg);
-        }
-        
+
         .form-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: var(--spacing-md);
+            gap: 1.5rem;
         }
-        
-        /* Tablet and Desktop Styles */
+
+        /* Responsive Design */
         @media (min-width: 640px) {
-            .auth-page {
-                padding: var(--spacing-xl);
-            }
-            
-            .auth-container {
-                padding: var(--spacing-xl);
-            }
-            
-            .auth-title {
-                font-size: var(--text-2xl);
-            }
-            
             .form-grid {
                 grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .split-layout {
+                flex-direction: column;
+            }
+            .hero-section {
+                padding: 3rem 2rem;
+                flex: none;
+                min-height: 40vh;
+            }
+            .hero-title {
+                font-size: 2.5rem;
+                margin-top: 2rem;
+            }
+            .hero-description {
+                max-width: 100%;
+            }
+            .form-section {
+                padding: 3rem 2rem;
+            }
+            .auth-container {
+                max-width: 100%;
+            }
+            .register-modal-content {
+                padding: 2rem;
+                width: 90%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="auth-page">
-        <main class="auth-container" role="main">
-            <h1 class="auth-title">Medicine List Generator</h1>
-            <p class="auth-subtitle">Secure access to your medication schedule</p>
-            
-            <div class="error-message" id="errorMessage" role="alert"></div>
-            <div class="success-message" id="successMessage" role="status"></div>
-            
-            <form class="auth-form" id="loginForm" aria-label="Login form">
-                <div class="form-group">
-                    <label for="patient_id">Patient ID</label>
-                    <input type="text" id="patient_id" name="patient_id" required 
-                           placeholder="Enter your patient ID" autocomplete="username" aria-required="true">
+    <div class="split-layout">
+        <!-- Editorial Hero Section -->
+        <section class="hero-section">
+            <div class="hero-header">
+                <div class="logo">
+                    <img src="/static/images/icon.png" alt="MedVoice Icon" style="width: 32px; height: auto;">
+                    MedVoice Ecosystem
                 </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required 
-                           placeholder="Enter your password" autocomplete="current-password" aria-required="true">
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
-            
-            <div class="auth-toggle">
-                <p>New user? <a href="#" id="showRegisterModal">Create account</a></p>
             </div>
-        </main>
+            
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Pulse of the
+                    <span>Community</span>
+                </h1>
+                <p class="hero-description">
+                    Discover real healthcare experiences in Bangladesh. Get intelligently analyzed insights on wait times, doctor behavior, facility quality, and seamless access to your Medication List Generator.
+                </p>
+                
+                <div class="ecosystem-badges">
+                    <span class="badge">Intelligent Insights</span>
+                    <span class="badge">Verified Reviews</span>
+                    <span class="badge">Rx Generator</span>
+                </div>
+            </div>
+            
+            <div class="hero-footer">
+                <p style="font-size: 0.85rem; color: rgba(255,255,255,0.4);">
+                    &copy; 2026 MedVoice Bangladesh. Secure & Confidential.
+                </p>
+            </div>
+        </section>
+
+        <!-- Login Form Section -->
+        <section class="form-section">
+            <main class="auth-container" role="main">
+                <div class="auth-header">
+                    <h2>Welcome Back</h2>
+                    <p>Enter your patient details to access the ecosystem.</p>
+                </div>
+                
+                <div class="error-message" id="errorMessage" role="alert"></div>
+                <div class="success-message" id="successMessage" role="status"></div>
+                
+                <form class="auth-form" id="loginForm" aria-label="Login form">
+                    <div class="form-group">
+                        <input type="text" id="patient_id" name="patient_id" class="form-control" required placeholder=" " autocomplete="username" aria-required="true">
+                        <label for="patient_id" class="form-label">Patient ID</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="password" id="password" name="password" class="form-control" required placeholder=" " autocomplete="current-password" aria-required="true">
+                        <label for="password" class="form-label">Password</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <span>Sign In</span>
+                    </button>
+                </form>
+                
+                <div class="auth-toggle">
+                    <p>Make your voice heard. <a href="#" id="showRegisterModal">Join our community now!</a></p>
+                </div>
+            </main>
+        </section>
     </div>
     
     <!-- Registration Modal -->
     <div class="register-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="register-title">
         <div class="register-modal-content">
             <div class="register-modal-header">
-                <h2 id="register-title">Create Account</h2>
+                <h2 id="register-title" class="modal-title">Join MedVoice</h2>
                 <button class="register-modal-close" id="closeRegisterModal" aria-label="Close registration modal">&times;</button>
             </div>
             
@@ -254,44 +515,40 @@
                 
                 <form class="auth-form" id="registerForm" aria-label="Registration form">
                     <div class="form-group">
-                        <label for="reg_name">Full Name</label>
-                        <input type="text" id="reg_name" name="name" required 
-                               placeholder="Enter your full name" aria-required="true">
+                        <input type="text" id="reg_name" name="name" class="form-control" required placeholder=" " aria-required="true">
+                        <label for="reg_name" class="form-label">Full Name</label>
                     </div>
                     
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="reg_age">Age</label>
-                            <input type="number" id="reg_age" name="age" required 
-                                   placeholder="Age" min="1" max="120" aria-required="true">
+                            <input type="number" id="reg_age" name="age" class="form-control" required placeholder=" " min="1" max="120" aria-required="true">
+                            <label for="reg_age" class="form-label">Age</label>
                         </div>
                         
                         <div class="form-group">
-                            <label for="reg_email">Email (Optional)</label>
-                            <input type="email" id="reg_email" name="email" 
-                                   placeholder="Email address">
+                            <input type="email" id="reg_email" name="email" class="form-control" placeholder=" ">
+                            <label for="reg_email" class="form-label">Email (Optional)</label>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="reg_patient_id">Choose Patient ID</label>
-                        <input type="text" id="reg_patient_id" name="patient_id" required 
-                               placeholder="Create a unique ID" aria-required="true">
+                        <input type="text" id="reg_patient_id" name="patient_id" class="form-control" required placeholder=" " aria-required="true">
+                        <label for="reg_patient_id" class="form-label">Choose Patient ID</label>
                     </div>
                     
                     <div class="form-group">
-                        <label for="reg_password">Password</label>
-                        <input type="password" id="reg_password" name="password" required 
-                               placeholder="Create a password" minlength="6" aria-required="true">
+                        <input type="password" id="reg_password" name="password" class="form-control" required placeholder=" " minlength="6" aria-required="true">
+                        <label for="reg_password" class="form-label">Password</label>
                     </div>
                     
                     <div class="form-group">
-                        <label for="reg_confirm_password">Confirm Password</label>
-                        <input type="password" id="reg_confirm_password" name="confirm_password" required 
-                               placeholder="Confirm your password" minlength="6" aria-required="true">
+                        <input type="password" id="reg_confirm_password" name="confirm_password" class="form-control" required placeholder=" " minlength="6" aria-required="true">
+                        <label for="reg_confirm_password" class="form-label">Confirm Password</label>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">Create Account</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>Join our community now!</span>
+                    </button>
                 </form>
             </div>
         </div>
@@ -299,5 +556,25 @@
     
     <script src="/static/js/config.js"></script>
     <script src="/static/js/auth.js"></script>
+    <!-- Micro-interactions Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add subtle parallax effect to the hero section
+            const heroSection = document.querySelector('.hero-section');
+            
+            if (window.innerWidth > 992 && heroSection) {
+                document.addEventListener('mousemove', (e) => {
+                    const x = e.clientX / window.innerWidth;
+                    const y = e.clientY / window.innerHeight;
+                    
+                    // Subtle background float
+                    const tiltX = (x - 0.5) * 15;
+                    const tiltY = (y - 0.5) * 15;
+                    
+                    heroSection.style.backgroundPosition = `${50 + tiltX}% ${50 + tiltY}%`;
+                });
+            }
+        });
+    </script>
 </body>
 </html>

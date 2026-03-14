@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from medicines.views import (
     login_view, register_view, logout_view, serve_login_page,
-    serve_index_page, serve_static_file, get_user_medicines,
+    serve_home_page, serve_index_page, serve_static_file, get_user_medicines,
     add_user_medicine, delete_user_medicine, update_user_medicine,
     get_patient_profile, update_patient_profile,
     get_color_preferences, save_color_preferences, get_available_palettes,
@@ -44,7 +44,8 @@ urlpatterns = [
     path('api/ocr/scan/', ocr_scan_prescription, name='ocr_scan'),
     path('login/', serve_login_page, name='login_page'),
     path('', serve_login_page, name='home'),
-    path('index/', serve_index_page, name='index_page'),
+    path('home/', serve_home_page, name='home_page'),
+    path('mlg/', serve_index_page, name='mlg_page'),
     path('static/<path:filename>', serve_static_file, name='serve_static'),
 ]
 

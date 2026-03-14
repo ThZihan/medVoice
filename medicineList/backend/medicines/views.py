@@ -51,7 +51,7 @@ def login_view(request):
                 'name': patient.user.get_full_name() or patient.user.username
             }, status=200)
 
-    return redirect(reverse('medicines:serve_index_page'))
+    return redirect(reverse('home_page'))
 
 
 @csrf_exempt
@@ -261,6 +261,18 @@ def update_patient_profile(request):
 def serve_login_page(request):
     """Serve the login page"""
     return render(request, 'login.html')
+
+
+@require_http_methods(["GET"])
+@login_required
+def serve_home_page(request):
+    """Serve the MedVoice BD homepage"""
+    # Get patient info
+    try:
+        patient = Patient.objects.get(user=request.user)
+        return render(request, 'medvoice-home.html', {'patient': patient})
+    except Patient.DoesNotExist:
+        return render(request, 'medvoice-home.html')
 
 
 @require_http_methods(["GET"])

@@ -145,6 +145,13 @@ GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 
 # GLM API for content generation
 GLM_API_KEY = config('GLM_API_KEY', default='')
+
+# GLM Model Configuration (optional)
+# Multi-model fallback is enabled by default:
+# - Tries glm-4.7-flash first (latest flash model)
+# - Falls back to glm-4.5-flash if primary is busy/unavailable
+# - Set GLM_MODEL to override and use a specific model only
+# GLM_MODEL = config('GLM_MODEL', default=None)
 ```
 
 ### 2.4 Configure Static Files
