@@ -68,6 +68,45 @@
     transform: translateY(0);
 }
 
+/* AI Specific Button */
+.btn-ai {
+    background-color: #ccfbf1; /* Light mint teal - soft and refreshing */
+    color: #0f766e; /* Deep teal text for contrast */
+    border: none;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0s var(--transition-fast);
+}
+
+.btn-ai:hover:not(:disabled) {
+    background-color: #99f6e4; /* Slightly deeper mint on hover */
+}
+
+.btn-ai::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #0d9488; /* Vibrant teal sweep */
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 0;
+}
+
+.btn-ai:hover:not(:disabled)::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.btn-ai span {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-ai:hover:not(:disabled) span {
+    color: #ffffff; /* White text on teal sweep */
+}
+
 /* Secondary Button */
 .btn-secondary {
     background: var(--color-bg);
